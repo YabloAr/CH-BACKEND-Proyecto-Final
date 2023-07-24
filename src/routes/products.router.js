@@ -42,23 +42,24 @@ async function checkProductValues(thisProduct) {
 //getAll con limite por query, funciona perfecto
 router.get("/", async (req, res) => {
     //array de productos
-    let products = await manager.getAll()
-    if (products.length <= 0) {
-        console.log("products.router: No products found in db.")
-        res.send({ status: 'Error', message: 'Products collection is empty.' })
-    } else {
-        //query limit
-        let limit = req.query.limit
-        try {
-            if (limit) {
-                const limitedProducts = products.length - parseInt(limit)
-                res.send(products.slice(limitedProducts))
-            } else {
-                res.send(products)
-            }
-        } catch (error) { console.log({ status: 'Error', message: error.message }) }
-    }
-
+    try {
+        let products = await manager.getAll()
+        if (products.length <= 0) {
+            console.log("products.router: No products found in db.")
+            res.send({ status: 'Error', message: 'Products collection is empty.' })
+        } else {
+            //query limit
+            let limit = req.query.limit
+            try {
+                if (limit) {
+                    const limitedProducts = products.length - parseInt(limit)
+                    res.send(products.slice(limitedProducts))
+                } else {
+                    res.send(products)
+                }
+            } catch (error) { console.log({ status: 'Error', error: error.message }) }
+        }
+    } catch (error) { return { status: 500, error: `product.router get failed, catch is ${error.message}` } }
 })
 
 //Optimized, saveProduct, funcionaba pero era un bardo, optimizado con chat gpt, quedo hecho un lujo. Gpt +1 Pankake
@@ -83,7 +84,7 @@ router.post('/', async (req, res) => {
         res.send({ status: 'Error', message: 'Check product values.' });
     } catch (error) {
         console.log(`POST Products try failed, catch error: ${error.message}`);
-        res.send({ status: 'Error', message: 'Post Product failed.' });
+        return { status: 500, error: `product.router get failed, catch is ${error.message}` }
     }
 });
 

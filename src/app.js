@@ -15,6 +15,7 @@ import { Server } from 'socket.io'
 import viewsRouter from './routes/views.router.js'
 import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/cart.router.js'
+import messagesRouter from './routes/message.router.js'
 import MessageManager from "./dao/dbManagers/messagesManager.js";
 
 //Definimos el servidor y agregamos el middleware de parseo de las request
@@ -40,6 +41,7 @@ app.set('view engine', 'handlebars') //le decimos a express que use el motor de 
 app.use('/', viewsRouter) //Definimos la ruta raiz de nuestro proyecto, y las respuestas en vistas con las handlebars.
 app.use("/api/products", productsRouter) //router de products
 app.use("/api/carts", cartsRouter) //router de carts
+app.use('/api/messages', messagesRouter) //router de messages
 
 
 

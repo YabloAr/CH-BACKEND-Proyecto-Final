@@ -4,7 +4,7 @@ const collectionName = 'messages'
 
 const messageSchema = mongoose.Schema({
     user: String,
-    message: String,
+    message: String
 })
 
 //el primer parametro es un string con el nombre de la coneccion a la que queremos acceder
