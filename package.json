@@ -1,0 +1,19 @@
+{
+  "name": "6.-tercera-pre-entrega-backend-mellyid-salomon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "mongoose": "^7.3.4",
+    "socket.io": "^4.7.1"
+  }
+}
