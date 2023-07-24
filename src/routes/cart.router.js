@@ -3,7 +3,7 @@ import CartManager from "../dao/dbManagers/cartsManager.js"
 
 //router y manager
 const router = Router()
-const manager = new CartManager("./data/carts.json")
+const manager = new CartManager()
 
 //api/carts
 

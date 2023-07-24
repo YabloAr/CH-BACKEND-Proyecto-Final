@@ -5,6 +5,13 @@ export default class Messages {
         console.log('dbManager: messagesManager.js. Conectado a Mongo Atlas Db.')
     }
 
+    getAllMessages = async () => {
+        try {
+            const messages = await messageModel.find().lean()
+            return messages
+        } catch (error) { console.error('Error getting messages from db', error.message) }
+    }
+
     saveMessage = async (message) => {
         try {
             await messageModel.create(message)
@@ -12,10 +19,5 @@ export default class Messages {
         } catch (error) { console.error('Error creating messages from db', error.message) }
     }
 
-    getAllMessages = async () => {
-        try {
-            const messages = await messageModel.find()
-            return messages
-        } catch (error) { console.error('Error getting messages from db', error.message) }
-    }
+
 }

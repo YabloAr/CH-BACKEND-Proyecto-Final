@@ -22,7 +22,7 @@ router.get('/carts', async (req, res) => {
 
 //Router de aplicacion chat
 router.get('/chat', (req, res) => {
-    res.render('index', {
+    res.render('chat', {
         style: 'index.css'
     })
 })
