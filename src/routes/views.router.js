@@ -1,10 +1,8 @@
 import { Router } from "express";
-import Carts from '../dao/dbManagers/cartsManager.js' //duda, importarlo con mayuscula inicial es buena practica o es necesario?
-import Products from '../dao/dbManagers/productsManager.js' //misma duda
+import CartsManager from '../dao/dbManagers/cartsManager.js'
 import productModel from "../dao/models/products.js";
 
-const productManager = new Products()
-const cartManager = new Carts()
+const cartManager = new CartsManager()
 
 const router = Router()
 
@@ -20,18 +18,16 @@ router.get('/', async (req, res) => {
 
         //Armamos la pipeline del aggregate
         const skip = (page - 1) * limit; //calcula algo que nose
-        const matchStage = category ? { category: category } : {}; //Si existe joya, sino se omite
+        const matchStage = category ? { category: category } : {}; //Si existe joya, sino lo deja vacio
 
-        // Add a stage to count the total documents with the 'category' filter applied
-        const countPipeline = [
-            { $match: matchStage },
-            { $count: 'totalCategoryCount' },
+        const countPipeline = [ //variable condicional
+            { $match: matchStage }, //se filtra por category, si esta vacio devuelve todo sin filtrar
+            { $count: 'totalCategoryCount' },//$count siempre va a devolver la cantidad de docs, el string es libre
         ];
-
-
+        //ejecuta la pipeline para obtener el resultado
         const totalCountResult = await productModel.aggregate(countPipeline).exec();
+        //totalCounResult no es un array, pero length igual recibe el dato. Se usa en hasNextPage
         const totalCategoryCount = totalCountResult.length > 0 ? totalCountResult[0].totalCategoryCount : 0;
-
 
         //pasamos los valores a la pipeline
         const pipeline = [
@@ -43,15 +39,14 @@ router.get('/', async (req, res) => {
 
         const products = await productModel.aggregate(pipeline).exec();
 
-        //validaciones hechas por gpt, entiendo pero es confuso.
-        const hasNextPage = skip + products.length < totalCategoryCount;
-        const hasPrevPage = page > 1;
+        //validaciones de cantidad de paginas segun resultados anteriores
+        const hasNextPage = skip + products.length < totalCategoryCount; //boolean
+        const hasPrevPage = page > 1;//boolean
         const nextPage = hasNextPage ? page + 1 : null;
         const prevPage = hasPrevPage ? page - 1 : null;
 
-        //le enviamos mediante el render, los datos necesarios para los handlebars.
+        //finalmente le enviamos mediante el render, los datos necesarios para los handlebars.
         res.render('products', { products, hasPrevPage, hasNextPage, prevPage, nextPage, limit, sort, category })
-
 
     } catch (error) { return { status: 'error', error: error.message } }
 })
