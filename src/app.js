@@ -1,8 +1,5 @@
 //CODERHOUSE BACKEND 43360
-//PRIMER ENTREGA INTEGRADORA.
-//Fecha de entrega: 13/07/2023
 //Alumno: Mellyid Salomón
-//Tutor: Juan Manuel Gonzalez
 
 //DEPENDENCIAS
 import express from "express"

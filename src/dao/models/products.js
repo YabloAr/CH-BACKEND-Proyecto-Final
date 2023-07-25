@@ -7,6 +7,10 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true
@@ -32,6 +36,6 @@ const productSchema = mongoose.Schema({
 
 //el primer parametro es un string con el nombre de la coneccion a la que queremos acceder
 //el segundo es el esquema de datos de caad documento dentro
-const userModel = mongoose.model(collectionName, productSchema)
+const productModel = mongoose.model(collectionName, productSchema)
 
-export default userModel
+export default productModel
