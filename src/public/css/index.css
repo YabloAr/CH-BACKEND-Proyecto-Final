@@ -5,3 +5,23 @@ body {
 p {
     color: rgb(65, 19, 19)
 }
+
+div {
+    /* Set the background color */
+    background-color: #588956;
+
+    /* Add some padding around the content inside the div */
+    padding: 20px;
+
+    /* Set a border around the div */
+    border: 1px solid #0b360d;
+
+    /* Add some border radius to give rounded corners */
+    border-radius: 5px;
+
+    /* Set a box shadow to create a subtle shadow effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    /* Center the text horizontally inside the div */
+    text-align: left;
+}

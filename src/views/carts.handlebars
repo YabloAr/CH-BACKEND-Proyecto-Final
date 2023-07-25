@@ -1,8 +1,13 @@
-<div>
-    CARTS
-</div>
+<h2> CARTS</h2>
 {{#each carts}}
-<p>Carrito</p>
-<p>{{this}}</p>
-<p>{{this.products}}</p>
+<div>
+    <p>Carrito ID: {{this._id}}</p>
+    <p>Products in Cart: </p>
+    <ul>
+        {{#each this.products}}
+        <li>Product: {{this.product}}</li>
+        <li>Quantity: {{this.quantity}}</li>
+        {{/each}}
+    </ul>
+</div>
 {{/each}}

@@ -1,7 +1,8 @@
-<div>
-    PRODUCTS
-</div>
+<h2>PRODUCTS VIEW</h2>
 {{#each products}}
-<p>{{this.title}}</p>
-<br>
+<div>
+    <h5>{{this.title}}</h5>
+    <p>{{this.description}}</p>
+    <h5>{{this.price}}</h5>
+</div>
 {{/each}}
