@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 const collectionName = 'products'
 
@@ -34,8 +35,10 @@ const productSchema = mongoose.Schema({
 }
 )
 
-//el primer parametro es un string con el nombre de la coneccion a la que queremos acceder
-//el segundo es el esquema de datos de caad documento dentro
+//le agregamos el plugin al esquema
+productSchema.plugin(paginate)
+
+//.model(nombre de la coleccion, esquema de los documentos)
 const productModel = mongoose.model(collectionName, productSchema)
 
 export default productModel

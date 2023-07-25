@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 const collectionName = 'messages'
 
@@ -7,8 +8,10 @@ const messageSchema = mongoose.Schema({
     message: String
 })
 
-//el primer parametro es un string con el nombre de la coneccion a la que queremos acceder
-//el segundo es el esquema de datos de caad documento dentro
+//le agregamos el plugin al esquema
+messageSchema.plugin(paginate)
+
+//.model(nombre de la coleccion, esquema de los documentos)
 const messageModel = mongoose.model(collectionName, messageSchema)
 
 export default messageModel

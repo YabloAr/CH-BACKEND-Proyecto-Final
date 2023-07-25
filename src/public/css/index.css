@@ -1,5 +1,6 @@
 body {
     background-color: rgb(141, 141, 141);
+
 }
 
 p {
@@ -7,21 +8,28 @@ p {
 }
 
 div {
-    /* Set the background color */
+    display: flex;
+    flex-direction: column;
+    width: 60%;
     background-color: #588956;
-
-    /* Add some padding around the content inside the div */
-    padding: 20px;
-
-    /* Set a border around the div */
+    margin: 15px;
+    padding: 5px;
     border: 1px solid #0b360d;
-
-    /* Add some border radius to give rounded corners */
     border-radius: 5px;
-
-    /* Set a box shadow to create a subtle shadow effect */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    /* Center the text horizontally inside the div */
     text-align: left;
+}
+
+/* Targeting the h5 elements inside the div */
+div h5 {
+    margin-top: 0;
+    /* Remove top margin to reduce spacing with the previous element */
+    margin-bottom: 5px;
+    /* Add a small margin at the bottom to separate from the next element */
+}
+
+/* Targeting the p elements inside the div */
+div p {
+    margin: 0;
+    /* Remove margin from all sides to reduce spacing */
 }

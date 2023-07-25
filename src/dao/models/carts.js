@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
 const collectionName = 'carts'
 
@@ -16,9 +17,10 @@ const cartSchema = mongoose.Schema({
         ]
     }
 })
+//le agregamos el plugin al esquema
+cartSchema.plugin(paginate)
 
-//el primer parametro es un string con el nombre de la coneccion a la que queremos acceder
-//el segundo es el esquema de datos de caad documento dentro
+//.model(nombre de la coleccion, esquema de los documentos)
 const cartModel = mongoose.model(collectionName, cartSchema)
 
 export default cartModel
