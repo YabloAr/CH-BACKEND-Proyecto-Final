@@ -6,6 +6,13 @@ const cartManager = new CartManager()
 
 const router = Router()
 
+//landing page
+router.get('/', (req, res) => {
+    const toProducts = 'http://localhost:8080/products'
+    const toCarts = 'http://localhost:8080/carts'
+    res.render('landing', { toProducts, toCarts })
+})
+
 //Router de productos con PAGINATE
 //cuando agregue el query de sort se complico muchisimo
 router.get('/products', async (req, res) => {

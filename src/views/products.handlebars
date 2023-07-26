@@ -1,4 +1,7 @@
+<h2>Welcome to Ace Ventura's Shop</h2>
+<img src="https://www.pikpng.com/pngl/m/395-3953549_pet-detective-oval-clipart.png" alt="" style="max-width: 200px" />
 <h2>PRODUCTS VIEW</h2>
+ <a href='http://localhost:8080/'> <button> Home </button></a>
 {{#each products}}
   <div>
     <h5>{{title}}</h5>
@@ -7,9 +10,12 @@
   </div>
 {{/each}}
 {{! validacion de queries para el handlebar, limit SIEMPRE llega, porque lo valida el router}}
+<div style="flex-direction: row;justify-content: space-around">
+    
 {{#if hasPrevPage}}
-  <a href="/?limit={{limit}}&sort={{sort}}&page={{prevPage}}{{#if category}}&category={{category}}{{/if}}"><button>Pagina Anterior</button></a>
+  <a href="http://localhost:8080/products/?limit={{limit}}&sort={{sort}}&page={{prevPage}}{{#if category}}&category={{category}}{{/if}}"><button>Pagina Anterior</button></a>
 {{/if}}
 {{#if hasNextPage}}
-  <a href="/?limit={{limit}}&sort={{sort}}&page={{nextPage}}{{#if category}}&category={{category}}{{/if}}"><button>Pagina Siguiente</button></a>
+  <a href="http://localhost:8080/products/?limit={{limit}}&sort={{sort}}&page={{nextPage}}{{#if category}}&category={{category}}{{/if}}"><button>Pagina Siguiente</button></a>
 {{/if}}
+  </div>

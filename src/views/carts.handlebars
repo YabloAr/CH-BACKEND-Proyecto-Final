@@ -1,13 +1,17 @@
-<h2> CARTS</h2>
+<h2>Welcome to Ace Ventura's Shop</h2>
+<img src="https://www.pikpng.com/pngl/m/395-3953549_pet-detective-oval-clipart.png" alt="" style="max-width: 200px" />
+
+<h2> CARTS </h2>
+<a href="http://localhost:8080/"> <button> Home </button></a>
 {{#each carts}}
-<div>
+  <div>
     <p>Carrito ID: {{this._id}}</p>
     <p>Products in Cart: </p>
     <ul>
-        {{#each this.products}}
+      {{#each this.products}}
         <li>Product: {{this.product}}</li>
         <li>Quantity: {{this.quantity}}</li>
-        {{/each}}
+      {{/each}}
     </ul>
-</div>
+  </div>
 {{/each}}
