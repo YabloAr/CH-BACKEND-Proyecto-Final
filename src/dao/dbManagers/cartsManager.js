@@ -31,28 +31,25 @@ export default class Carts {
     }
 
     getCartById = async (id) => {
-        return await cartsModel.findOne({ _id: id })
+        return await cartsModel.find({ _id: id })
     }
 
     addProductToCart = async (cartId, productId) => {
         try {
             const thisCart = await cartsModel.findById(cartId);
 
-            if (!thisCart) {
-                return { status: "failed", message: 'Cart doesnt exist, check id.' };
-            }
+            if (!thisCart) { return { status: "failed", message: 'Cart doesnt exist, check id.' } }
 
             const productIndex = thisCart.products.findIndex((p) => p.product.toString() === productId); //el toString es necesario
 
             if (productIndex !== -1) {
                 thisCart.products[productIndex].quantity += 1;
             } else {
-                thisCart.products.push({ product: productId, quantity: 1 });
+                thisCart.products.push({ product: productId.toString(), quantity: 1 })
             }
 
-            await cartsModel.findByIdAndUpdate(thisCart._id, thisCart);
-
-            return { status: 'success', message: 'Product added.', payload: thisCart };
+            const newCart = await thisCart.save();
+            return { status: 'success', message: 'Product added.', payload: newCart };
         } catch (error) {
             console.error(error);
             return { status: "error", message: `Try failed, catched error is ${error.message}` }
