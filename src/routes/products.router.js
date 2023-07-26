@@ -86,8 +86,9 @@ router.get("/", async (req, res) => {
         const hasNextPage = skip + resultProducts.length < totalProductCount; //booleano
         const hasPrevPage = page > 1; //booleano
 
+
         const response = {
-            status: 'nose',
+            status: 'Available? Nose que deberia salir de status...',
             payload: resultProducts,
             totalPages: Math.ceil(totalProductCount / limit),
             prevPage: hasPrevPage ? page - 1 : null,

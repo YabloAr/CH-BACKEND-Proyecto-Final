@@ -1,6 +1,7 @@
 import cartsModel from '../models/carts.js'
 import ProductManager from './productsManager.js'
 import mongoose from 'mongoose'
+import cartModel from '../models/carts.js'
 
 
 
@@ -32,17 +33,6 @@ export default class Carts {
     getCartById = async (id) => {
         return await cartsModel.findOne({ _id: id })
     }
-
-    deleteCart = async (id) => {
-        try {
-            await cartsModel.deleteOne({ _id: id });
-            return { status: 'Success.', message: `Cart ${id} deleted.` };
-        } catch (error) {
-            return { status: 'Error', message: error.message };
-        }
-
-    }
-
 
     addProductToCart = async (cartId, productId) => {
         try {
@@ -96,4 +86,60 @@ export default class Carts {
         }
     };
 
+    //ultimo update, clase 17 - Mongoose II
+    updateCartProducts = async (cartId, newProducts) => {
+        try {
+            const thisCart = await cartsModel.findById(cartId)
+            thisCart.products = newProducts
+            await cartsModel.findByIdAndUpdate(cartId, thisCart);
+            return { status: 'success', message: `Complete products of ${cartId} updated.`, payload: thisCart }
+
+        } catch (error) { return { status: 'error', message: `Try failed, caught error: ${error.message}` } }
+    }
+
+    //ultimo update, clase 17 - Mongoose II
+    updateQuantity = async (cartId, productId, quantity) => {
+        try {
+            const thisCart = await cartsModel.findById(cartId);
+            if (!thisCart) { return { status: 'failed', message: 'Cart does not exist, check ID.' } }
+
+            const thisProduct = thisCart.products.find(item => item.product === productId)
+            if (!thisProduct) { return { status: 'failed', message: 'Product does not exist in cart, check ID.' } }
+
+            thisProduct.quantity = quantity
+
+            const productIndex = thisCart.products.findIndex(item => item.product === productId)
+            thisCart.products[productIndex] = thisProduct
+
+            await cartsModel.findByIdAndUpdate(thisCart._id, thisCart)
+            return { status: 'success', message: 'Product quantity updated.', payload: thisCart };
+
+        } catch (error) { return { status: 'error', message: `Try failed, caught error: ${error.message}` } }
+    };
+
+    //ultimo update, clase 17 - Mongoose II
+    emptyCart = async (cartId) => {
+        try {
+
+            const thisCart = await cartsModel.findById(cartId);
+            if (!thisCart) { return { status: 'failed', message: 'Cart does not exist, check ID.' } }
+
+            thisCart.products = []
+            await cartModel.findByIdAndUpdate(cartId, thisCart)
+            return { status: 'success', message: 'Cart products reseted.', payload: thisCart };
+
+        } catch (error) { return { status: 'error', message: `Try failed, caught error: ${error.message}` } }
+
+    }
+
+    // //deprecado
+    // deleteCart = async (id) => {
+    //     try {
+    //         await cartsModel.deleteOne({ _id: id });
+    //         return { status: 'Success.', message: `Cart ${id} deleted.` };
+    //     } catch (error) {
+    //         return { status: 'Error', message: error.message };
+    //     }
+
+    // }
 }

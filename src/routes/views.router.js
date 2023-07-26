@@ -8,7 +8,7 @@ const router = Router()
 
 //Router de productos con PAGINATE
 //cuando agregue el query de sort se complico muchisimo
-router.get('/', async (req, res) => {
+router.get('/products', async (req, res) => {
     try {
         //Optimizado, validamos la query, si no existe, le otorgamos el valor por defecto.
         const page = parseInt(req.query.page) || 1

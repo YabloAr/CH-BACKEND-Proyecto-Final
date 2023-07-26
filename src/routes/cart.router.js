@@ -11,7 +11,7 @@ const manager = new CartManager()
 router.get("/", async (req, res) => {
     const carts = await manager.getAll()
     if (carts.length <= 0) {
-        res.send({ status: 'Error', message: 'Carts collection is empty.' })
+        res.send({ status: 'Error', message: 'No existing carts.' })
     } else {
         res.send(carts)
     }
@@ -29,7 +29,10 @@ router.post("/", async (req, res) => {
             await manager.createCart()
             res.send({ status: "Ok", message: "New cart added." })
         }
-    } catch (error) { return { status: "error", message: error.message } }
+    } catch (error) {
+        console.log(`cart.router try failed, catch is ${error.message}`);
+        res.status(500).send({ status: "error", message: error.message });
+    }
 })
 
 //getCartById, 
@@ -51,17 +54,35 @@ router.post("/:cid/products/:pid", async (req, res) => {
     res.send(result)
 })
 
-//delete cart
-router.delete("/:cid", async (req, res) => {
+//actualizar array de productos en el carrito, updated Clase 17 - Mongoose II
+router.put('/:cid', async (req, res) => {
     const cid = req.params.cid
-    const result = await manager.deleteCart(cid)
+    const newProducts = req.body
+    const result = await manager.updateCartProducts(cid, newProducts)
     res.send(result)
 })
 
 router.put('/:cid/products/:pid', async (req, res) => {
     const cid = req.params.cid
     const pid = req.params.pid
+    const quantity = req.body
+    const quantityNumber = parseInt(quantity.quantity)
+    const result = await manager.updateQuantity(cid, pid, quantityNumber)
+    res.send(result)
+})
+
+//delete product from cart
+router.delete('/:cid/products/:pid', async (req, res) => {
+    const cid = req.params.cid
+    const pid = req.params.pid
     const result = await manager.deleteProductFromCart(cid, pid)
+    res.send(result)
+})
+
+//vaciar carrito
+router.delete("/:cid", async (req, res) => {
+    const cid = req.params.cid
+    const result = await manager.emptyCart(cid)
     res.send(result)
 })
 
