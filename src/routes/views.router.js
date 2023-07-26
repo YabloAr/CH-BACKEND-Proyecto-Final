@@ -1,8 +1,8 @@
 import { Router } from "express";
-import CartsManager from '../dao/dbManagers/cartsManager.js'
+import CartManager from '../dao/dbManagers/cartsManager.js'
 import productModel from "../dao/models/products.js";
 
-const cartManager = new CartsManager()
+const cartManager = new CartManager()
 
 const router = Router()
 
@@ -38,7 +38,6 @@ router.get('/', async (req, res) => {
         ];
 
         const products = await productModel.aggregate(pipeline).exec();
-
         //validaciones de cantidad de paginas segun resultados anteriores
         const hasNextPage = skip + products.length < totalCategoryCount; //boolean
         const hasPrevPage = page > 1;//boolean

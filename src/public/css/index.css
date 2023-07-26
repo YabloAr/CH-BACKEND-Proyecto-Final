@@ -1,6 +1,8 @@
 body {
-    background-color: rgb(141, 141, 141);
-
+    background-image: url("https://res.cloudinary.com/dfrvbm0im/image/upload/v1690351271/lofiwall_vrww9q.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 p {
