@@ -7,7 +7,8 @@ import productModel from "../dao/models/products.js"
 const router = Router()
 const manager = new ProductManager()
 
-//-------------Funciones de validacion
+//---------------------------------------------------------Funciones de validacion
+
 //funcion para validar strings
 async function isString(value) {
     return typeof value === 'string';
@@ -25,7 +26,6 @@ async function checkProductValues(thisProduct) {
             await isNumber(thisProduct.price) === true &&
             await isString(thisProduct.thumbnail) == true &&
             await isString(thisProduct.category) === true &&
-            await isString(thisProduct.code) === true &&
             await isNumber(thisProduct.stock) === true) {
             console.log("Product Router: Validacion (existencia y tipo de datos) exitosa.")
             return true
@@ -37,11 +37,12 @@ async function checkProductValues(thisProduct) {
         console.log(`Product Router: checkProductValues resultado try/catch fallida, ${error.message}`)
     }
 }
-//-------------Fin funciones de validacion
+
+//---------------------------------------------------------Fin funciones de validacion
 
 //...api/products
 
-//ultimo update, clase 17 - mongoose II
+//getAll products with paginate, ultimo update, clase 17 - mongoose II. ok 30/07
 router.get("/", async (req, res) => {
     //array de productos
     try {
@@ -108,7 +109,7 @@ router.get("/", async (req, res) => {
     }
 })
 
-//Optimized, saveProduct, funcionaba pero era un bardo, optimizado con chat gpt, quedo hecho un lujo. Gpt +1 Pankake
+//saveProduct, postear un nuevo producto. ok 30/07
 router.post('/', async (req, res) => {
     try {
         const thisProduct = req.body;
@@ -118,10 +119,8 @@ router.post('/', async (req, res) => {
             const addStatus = await manager.saveProduct(thisProduct);
 
             if (addStatus.status === 'Success.') {
-                console.log('Product Router Post, ok.');
-                return res.send({ status: 'Success', message: `Product (${thisProduct.title}) pushed to db.` });
+                return res.send(addStatus);
             }
-
             console.log('Product Router Post, failed try/catch.');
             return res.send(addStatus);
         }
@@ -134,48 +133,48 @@ router.post('/', async (req, res) => {
     }
 });
 
-//getProductById, id por params.
+//getProductById. ok 30/07
 router.get("/:pid", async (req, res) => {
-    let idProduct = req.params.pid
-    const foundProduct = await manager.findProductById(idProduct)
-    if (foundProduct) {
-        res.send(foundProduct)
+    let pid = req.params.pid
+    const result = await manager.getProductById(pid)
+    if (result) {
+        res.send(result)
     } else {
         res.send({ status: 'Error', message: `GET Product/:pid failed, id not found.` })
     }
 })
 
-//updateProduct, id por params
+//updateProduct. ok 30/07
 router.put(`/:pid`, async (req, res) => {
     const newData = req.body
-    let idProduct = req.params.pid
-    const foundProduct = await manager.findProductById(idProduct)
-    if (foundProduct) {
-        try {
-            const result = await manager.updateProduct(idProduct, newData)
+    const pid = req.params.pid
+    try {
+        const foundProduct = await manager.getProductById(pid)
+        if (foundProduct) {
+
+            const result = await manager.updateProduct(pid, newData)
             if (result.status === "Success.") {
                 res.send(result)
             } else {
                 res.send({ status: "Error.", message: `Product Router Put failed.` })
             }
-        } catch (error) {
-            console.log(`PUT Products try failed, catch is ${error.message}`)
-            res.send({ status: "error", message: "Router catched an error." })
-        }
-    } else {
-        res.send({ status: "Failed", message: `Router Put failed, product id not found in database.` })
+
+        } else { res.send({ status: "Failed", message: `Router Put failed, product id not found in database.` }) }
+    } catch (error) {
+        console.log(`PUT Products try failed, catch is ${error.message}`)
+        res.send({ status: "error", message: "Router catched an error." })
     }
 })
 
-//deleteProductById, id por params.
+//deleteProduct. ok 30/07
 router.delete('/:pid', async (req, res) => {
     try {
-        const idProduct = req.params.pid;
-        const foundProduct = await manager.findProductById(idProduct);
+        const pid = req.params.pid;
+        const foundProduct = await manager.getProductById(pid);
 
         if (foundProduct) {
-            await manager.deleteProduct(idProduct);
-            res.send({ status: 'Success.', message: `Product ${idProduct} deleted.` });
+            const result = await manager.deleteProduct(pid);
+            res.send(result);
         } else {
             res.send({ error: 'Router Delete failed, id not found.' });
         }

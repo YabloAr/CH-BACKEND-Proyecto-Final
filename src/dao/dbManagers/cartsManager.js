@@ -15,7 +15,7 @@ export default class Carts {
     createCart = async () => {
         try {
             let newCart = {
-                "products": []
+                products: []
             }
             await cartsModel.create(newCart)
             return ({ status: 'Success.', message: 'Cart created.' })
@@ -31,25 +31,27 @@ export default class Carts {
     }
 
     getCartById = async (id) => {
-        return await cartsModel.find({ _id: id })
+        return await cartsModel.findById(id).populate('products', 'product')
     }
 
     addProductToCart = async (cartId, productId) => {
         try {
-            const thisCart = await cartsModel.findById(cartId);
-
+            const thisCart = await this.getCartById(cartId);
             if (!thisCart) { return { status: "failed", message: 'Cart doesnt exist, check id.' } }
 
-            const productIndex = thisCart.products.findIndex((p) => p.product.toString() === productId); //el toString es necesario
+            const thisProduct = await productManager.getProductById(productId)
+            if (!thisProduct) { return { status: "failed", message: 'Product doesnt exist in db, check id.' } }
 
+            const productIndex = await thisCart.products.findIndex((p) => p.product._id.toString() === productId);
             if (productIndex !== -1) {
-                thisCart.products[productIndex].quantity += 1;
+                thisCart.products[productIndex].quantity = parseInt(thisCart.products[productIndex].quantity) + 1
             } else {
-                thisCart.products.push({ product: productId.toString(), quantity: 1 })
+                thisCart.products.push({ product: productId, quantity: 1 })
             }
 
-            const newCart = await thisCart.save();
-            return { status: 'success', message: 'Product added.', payload: newCart };
+            await cartModel.updateOne({ _id: thisCart._id }, thisCart);
+
+            return { status: 'success', message: 'Product added.', payload: thisCart };
         } catch (error) {
             console.error(error);
             return { status: "error", message: `Try failed, catched error is ${error.message}` }
@@ -64,7 +66,7 @@ export default class Carts {
                 return { status: 'failed', message: 'Cart does not exist, check ID.' };
             }
 
-            const foundProduct = await productManager.findProductById(productId);
+            const foundProduct = await productManager.getProductById(productId);
             if (!foundProduct) {
                 return { status: 'failed', message: 'Product does not exist, check ID.' };
             }
@@ -129,14 +131,4 @@ export default class Carts {
 
     }
 
-    // //deprecado
-    // deleteCart = async (id) => {
-    //     try {
-    //         await cartsModel.deleteOne({ _id: id });
-    //         return { status: 'Success.', message: `Cart ${id} deleted.` };
-    //     } catch (error) {
-    //         return { status: 'Error', message: error.message };
-    //     }
-
-    // }
 }

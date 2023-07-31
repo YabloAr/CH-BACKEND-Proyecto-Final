@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     res.render('landing', { toProducts, toCarts })
 })
 
-//Router de productos con PAGINATE
+//GET PRODUCTS  con PAGINATE
 //cuando agregue el query de sort se complico muchisimo
 router.get('/products', async (req, res) => {
     try {
@@ -57,13 +57,27 @@ router.get('/products', async (req, res) => {
     } catch (error) { return { status: 'error', error: error.message } }
 })
 
-//Router de carts
+//GET CARTS Router de carts
 router.get('/carts', async (req, res) => {
     let carts = await cartManager.getAll() //le enviamos mediante el render, los datos necesarios para los handlebars.
     res.render('carts', { carts })
 })
 
-//Router de aplicacion chat
+//GET CART BY ID Router de carts
+router.get('/carts/:cid', async (req, res) => {
+    const cid = req.params.cid
+    const thisCart = await cartManager.getCartById(cid)
+
+    const products = thisCart.products.map(productData => ({
+        ...productData.product.toObject(),
+        quantity: productData.quantity
+    }));
+
+
+    res.render('cart', { cid, products })
+})
+
+//GET CHAT Router de aplicacion chat
 router.get('/chat', (req, res) => {
     res.render('chat', {
         style: 'index.css'
