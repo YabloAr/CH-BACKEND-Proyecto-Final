@@ -1,12 +1,22 @@
 //CODERHOUSE BACKEND 43360
 //Alumno: Mellyid Salomón
 
+//dotenv -- CONSULTAR Y RESOLVER
+// import "dotenv/config.js";
+// import dotenv from 'dotenv';
+// dotenv.config();
+// const connection = mongoose.connect(process.env.MONGO_DB_URL) //da undefined
+//agregar tambien el valor secret de las sessions para el hash
+
+
 //DEPENDENCIAS
 import express from "express"
 import __dirname from "./utils.js";
 import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import { Server } from 'socket.io'
+import MongoStore from "connect-mongo"; //for sessions
+import session from "express-session"; //sessions
 
 //Gestores de rutas y manager de mensajes
 import viewsRouter from './routes/views.router.js'
@@ -14,6 +24,7 @@ import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/cart.router.js'
 import messagesRouter from './routes/message.router.js'
 import MessageManager from "./dao/dbManagers/messagesManager.js";
+import sessionsRouter from './routes/sessions.router.js' //sessions
 
 //Definimos el servidor y agregamos el middleware de parseo de las request
 const PORT = 8080 //Buena practica, definir una variable con el puerto.
@@ -24,10 +35,24 @@ app.use(express.urlencoded({ extended: true }))
 //ServerUp
 const httpserver = app.listen(PORT, () => console.log("Server up."))
 
-
 //Conexion a mi base de datos de Mongo, mi URL personal.
 mongoose.set('strictQuery', false) //corrige error de deprecacion del sistema
-const connection = mongoose.connect('mongodb+srv://Yablo:qGz*785_c.Yfwcf@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority')
+const connection = mongoose.connect("mongodb+srv://Yablo:qGz*785_c.Yfwcf@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true }) //añadi estos dos parametros por buena practica. parece no haber cambiado nada. Todo ok
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: 'mongodb+srv://Yablo:qGz*785_c.Yfwcf@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority',
+        mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+        ttl: 120
+    }),
+    secret: 'no lo se Rick', //add to env
+    resave: true,
+    // saveUninitialized: al estar en falso, durante la vida de la session, si esta session file no cambia, no se guarda.
+    //Para este proyecto, no nos interesa guardar sesiones sin registrar en la db.
+    saveUninitialized: false
+
+}))
 
 //Express handlebars
 app.engine('handlebars', handlebars.engine()) //habilitamos el uso del motor de plantillas en el servidor.
@@ -39,6 +64,7 @@ app.use('/', viewsRouter) //Definimos la ruta raiz de nuestro proyecto, y las re
 app.use("/api/products", productsRouter) //router de products
 app.use("/api/carts", cartsRouter) //router de carts
 app.use('/api/messages', messagesRouter) //router de messages
+app.use('/api/sessions', sessionsRouter) //router de sessiones
 
 
 

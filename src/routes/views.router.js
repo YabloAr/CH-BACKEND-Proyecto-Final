@@ -10,13 +10,17 @@ const router = Router()
 router.get('/', (req, res) => {
     const toProducts = 'http://localhost:8080/products'
     const toCarts = 'http://localhost:8080/carts'
-    res.render('landing', { toProducts, toCarts })
+    const toLogin = 'http://localhost:8080/login'
+    const toRegister = 'http://localhost:8080/register'
+    const toProfile = 'http://localhost:8080/profile'
+    res.render('landing', { toProducts, toCarts, toLogin, toRegister, toProfile })
 })
 
 //GET PRODUCTS  con PAGINATE
-//cuando agregue el query de sort se complico muchisimo
 router.get('/products', async (req, res) => {
     try {
+        if (!req.session?.user) res.redirect('/login');
+        const user = req.session.user
         //Optimizado, validamos la query, si no existe, le otorgamos el valor por defecto.
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 5
@@ -52,19 +56,21 @@ router.get('/products', async (req, res) => {
         const prevPage = hasPrevPage ? page - 1 : null;
 
         //finalmente le enviamos mediante el render, los datos necesarios para los handlebars.
-        res.render('products', { products, hasPrevPage, hasNextPage, prevPage, nextPage, limit, sort, category })
+        res.render('products', { products, hasPrevPage, hasNextPage, prevPage, nextPage, limit, sort, category, user })
 
     } catch (error) { return { status: 'error', error: error.message } }
 })
 
 //GET CARTS Router de carts
 router.get('/carts', async (req, res) => {
-    let carts = await cartManager.getAll() //le enviamos mediante el render, los datos necesarios para los handlebars.
-    res.render('carts', { carts })
+    if (!req.session?.user) res.redirect('/login');
+    let carts = await cartManager.getAll()
+    res.render('carts', { carts }) //le enviamos mediante el render, los datos necesarios para los handlebars.
 })
 
 //GET CART BY ID Router de carts
 router.get('/carts/:cid', async (req, res) => {
+    if (!req.session?.user) res.redirect('/login');
     const cid = req.params.cid
     const thisCart = await cartManager.getCartById(cid)
 
@@ -82,6 +88,24 @@ router.get('/chat', (req, res) => {
     res.render('chat', {
         style: 'index.css'
     })
+})
+
+
+//GET USERS AND SESSIONS
+
+//GET register
+router.get('/register', (req, res) => {
+    res.render('register')
+})
+
+//GET login (agrega datos de usuario a req.session si el login es correcto)
+router.get('/login', (req, res) => {
+    res.render('login')
+})
+
+//GET profile, seria el finally this del tema sessions
+router.get('/profile', async (req, res) => {
+    req.session.user === undefined ? res.send('You are not logged in.') : res.render('profile', { user: req.session.user })
 })
 
 export default router

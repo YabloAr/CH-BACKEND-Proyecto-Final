@@ -1,9 +1,9 @@
 CODERHOUSE - BACKEND #43360
-Tutora: Noelia.
+Tutora: Noelia Cossio.
 
 Nuevo repositorio para alojar el progreso del proyecto final del curso.
 Las entregas iran siendo alojadas en nuevas ramas.
 
-Entrega Finalizada
+Desafio Clase 19 - Login por Formulario: Entrega Finalizada
 
-Consultas: None
+Consultas: None.
