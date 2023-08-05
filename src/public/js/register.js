@@ -19,7 +19,6 @@ form.addEventListener('submit', e => {
         }
     })
         .then(result => {
-            console.log(result); // Check the result from the server
             if (result.status === 200) {
                 console.log("Redirecting...");
                 alert('Account created. Now log in bastard.')

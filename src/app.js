@@ -2,12 +2,9 @@
 //Alumno: Mellyid Salomón
 
 //dotenv -- CONSULTAR Y RESOLVER
-// import "dotenv/config.js";
-// import dotenv from 'dotenv';
-// dotenv.config();
-// const connection = mongoose.connect(process.env.MONGO_DB_URL) //da undefined
-//agregar tambien el valor secret de las sessions para el hash
+import "dotenv/config";
 
+// agregar tambien el valor secret de las sessions para el hash
 
 //DEPENDENCIAS
 import express from "express"
@@ -17,6 +14,8 @@ import mongoose from "mongoose";
 import { Server } from 'socket.io'
 import MongoStore from "connect-mongo"; //for sessions
 import session from "express-session"; //sessions
+import passport from "passport";
+import { initPassport } from "./config/passport.config.js";
 
 //Gestores de rutas y manager de mensajes
 import viewsRouter from './routes/views.router.js'
@@ -35,10 +34,10 @@ app.use(express.urlencoded({ extended: true }))
 //ServerUp
 const httpserver = app.listen(PORT, () => console.log("Server up."))
 
-//Conexion a mi base de datos de Mongo, mi URL personal.
+//Conexion a mi base de datos de Mongo, mi URL personal protegida en .env.
 mongoose.set('strictQuery', false) //corrige error de deprecacion del sistema
-const connection = mongoose.connect("mongodb+srv://Yablo:qGz*785_c.Yfwcf@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }) //añadi estos dos parametros por buena practica. parece no haber cambiado nada. Todo ok
+const connection = mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true }) //añadi estos dos parametros por docs de mongoose, evita futura deprecacion.
 
 app.use(session({
     store: MongoStore.create({
@@ -46,7 +45,7 @@ app.use(session({
         mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
         ttl: 120
     }),
-    secret: 'no lo se Rick', //add to env
+    secret: process.env.SESSION_SECRET,
     resave: true,
     // saveUninitialized: al estar en falso, durante la vida de la session, si esta session file no cambia, no se guarda.
     //Para este proyecto, no nos interesa guardar sesiones sin registrar en la db.
@@ -58,6 +57,15 @@ app.use(session({
 app.engine('handlebars', handlebars.engine()) //habilitamos el uso del motor de plantillas en el servidor.
 app.set('views', __dirname + '/views') //declaramos la carpeta con las vistas para las plantillas.
 app.set('view engine', 'handlebars') //le decimos a express que use el motor de vistas de handlebars.
+
+//Passport, update clase 20
+//npm i bcrypt --> hasheador: almacenamos las funciones de hasheo en utils.js
+//npm i passport --> modulo core && passport-local --> modulo de estrategias
+//almacenamos la configuracion de passport en una carpeta dedicada config/passport.config
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 //Routers, aqui alojamos los diferentes tipos de request (GET, POST, PUT, DELETE, etc)
 app.use('/', viewsRouter) //Definimos la ruta raiz de nuestro proyecto, y las respuestas en vistas con las handlebars.
@@ -76,7 +84,7 @@ const io = new Server(httpserver) //Declaramos el servidor http dentro del serve
 
 //Encendemos el socket con .on (escucha/recibe)
 io.on('connection', socket => {
-    console.log("App.js Chat: New client connected.")
+    // console.log("App.js Chat: New client connected.")
     //el socket espera algun 'message' desde el cliente (index.js), data llega como objeto, {user: x, message: x}
     socket.on('message', async data => {
         try {

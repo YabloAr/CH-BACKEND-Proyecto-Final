@@ -105,7 +105,11 @@ router.get('/login', (req, res) => {
 
 //GET profile, seria el finally this del tema sessions
 router.get('/profile', async (req, res) => {
-    req.session.user === undefined ? res.send('You are not logged in.') : res.render('profile', { user: req.session.user })
+    if (req.session.user === undefined) {
+        res.render('failedlogin')
+    } else {
+        res.render('profile', { user: req.session.user })
+    }
 })
 
 export default router
