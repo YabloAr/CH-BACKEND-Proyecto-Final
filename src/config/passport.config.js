@@ -1,16 +1,16 @@
-//updated, Clase 20. Autorizacion y Autenticacion
-
+//updated, Clase 21. Autorizacion y Autenticacion + github
 import passport from 'passport'
 import local from 'passport-local'
 import userModel from '../dao/models/users.js'
 import { createHash, isValidPassword } from '../utils.js'
+import gitHubService from 'passport-github2'
 
 //Inicializamos la estrategia local
 const LocalStrategy = local.Strategy
 
 //Basicamente la funcion de passport es gestionar autenticacion y autorizacion de usuarios
 //en un modulo totalmente dedicado. Para mantener un codigo prolijo y con un buen orden modular.
-//Podemos definir cada estrategia por separado, y exportar solamente el init vacio.
+//Podemos definir cada estrategia por separado, y exportar solamente el init vacio (o definir todo dentro del init)
 
 // gpt
 // serializeUser and deserializeUser is a function used by Passport.js to serialize a user object into the session.
@@ -63,6 +63,35 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (userE
         return done(error)
     }
 }))
+
+//github
+passport.use('github', new gitHubService({
+    clientID: process.env.GIT_HUB_STRATEGY_CLIENT_ID,
+    clientSecret: process.env.GIT_HUB_STRATEGY_CLIENT_SECRET,
+    callbackURL: process.env.GIT_HUB_STRATEGY_CALLBACK_URL
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        console.log((profile))
+        let user = await userModel.findOne({ email: profile.json.email })
+        if (!user) {
+            let newUser = {
+                first_name: profile._json.name,
+                last_name: '',
+                age: '',
+                email: profile._json.email,
+                password: ''
+            }
+            let result = await userModel.create(newUser)
+            done(null, result)
+        } else {
+            done(null, user)
+        }
+    } catch (error) {
+        return done(error)
+    }
+}
+))
+
 
 
 

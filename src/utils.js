@@ -1,7 +1,31 @@
 //Paso Uno, crear utils
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import bcrypt from 'bcrypt' //cripterr
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import "dotenv/config";
+
+const KEY = process.env.JASONWEBTOKEN_KEY
+
+export const generateToken = (user) => {
+    const token = jwt.sign({ user }, KEY, { expiresIn: '6h' })
+    return token
+}
+
+export const authToken = (req, res, next) => {
+    const headerAuth = req.headers.authorization
+    if (!headerAuth) return res.status(401).send({ status: 'error', error: 'Not Autorized' })
+    console.log('utils authToken headerAuth is:')
+    console.log(headerAuth)
+    const token = headerAuth.split(' ')[1] //porque viene en string y necesitamos solo el token id
+
+    jwt.verify(token, KEY, (error, credentials) => {
+        console.log(error)
+        if (error) return res.status(401).send({ status: 'error', error: 'Not autorized second check.' })
+        req.user = credentials.user
+        next()
+    })
+}
 
 // hashSync toma el password que pasemos y procede a aplicar un proceso de hasheo a partir de un "Salt".
 // genSaltSync genera un Salt de 10 caracteres. Un Salt es una string random que hace que el  proceso

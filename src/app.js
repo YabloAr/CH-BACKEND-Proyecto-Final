@@ -41,7 +41,7 @@ const connection = mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${p
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://Yablo:qGz*785_c.Yfwcf@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority',
+        mongoUrl: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority`,
         mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
         ttl: 120
     }),
