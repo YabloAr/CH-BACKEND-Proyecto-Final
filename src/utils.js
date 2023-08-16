@@ -12,15 +12,17 @@ const KEY = process.env.JASONWEBTOKEN_KEY //inventada por mi mismisimo ego. (pue
 
 export const generateToken = (user) => {
     const token = jwt.sign({ user }, KEY, { expiresIn: '6h' })
-    return token
+    return token //contiene solamente un string encryptado.
 }
 
 export const authToken = (req, res, next) => {
-    const headerAuth = req.headers.authorization
-    if (!headerAuth) return res.status(401).send({ status: 'error', error: 'Not Autorized' })
+    const headerAuth = req.headers
+    console.log(req.headers.authorization)
     console.log('utils authToken headerAuth is:')
     console.log(headerAuth)
-    const token = headerAuth.split(' ')[1] //porque viene en string y necesitamos solo el token id
+    if (!headerAuth) return res.status(401).send({ status: 'error', error: 'Not Autorized' })
+    //porque viene en string y necesitamos solo el token id, sino viene como 'Bearer {id}', con el split en el espacio queda solo el string id.
+    const token = headerAuth.split(' ')[1]
 
     jwt.verify(token, KEY, (error, credentials) => {
         console.log(error)

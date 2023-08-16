@@ -58,7 +58,7 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (userE
             return done(null, false)
         }
         if (!isValidPassword(user, password)) return done(null, false)
-        return done(null, user)
+        return done(null, user) //cuando esta info sale de aca, queda guardada en req.user
     } catch (error) {
         return done(error)
     }

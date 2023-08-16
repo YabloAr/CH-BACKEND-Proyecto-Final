@@ -1,6 +1,7 @@
 import { Router } from "express";
 import CartManager from '../dao/dbManagers/cartsManager.js'
 import productModel from "../dao/models/products.js";
+import { authToken } from "../utils.js";
 
 const cartManager = new CartManager()
 
@@ -17,10 +18,8 @@ router.get('/', (req, res) => {
 })
 
 //GET PRODUCTS  con PAGINATE
-router.get('/products', async (req, res) => {
+router.get('/products', authToken, async (req, res) => {
     try {
-        if (!req.session?.user) res.redirect('/login');
-        const user = req.session.user
         //Optimizado, validamos la query, si no existe, le otorgamos el valor por defecto.
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 5
@@ -104,11 +103,12 @@ router.get('/login', (req, res) => {
 })
 
 //GET profile, seria el finally this del tema sessions
-router.get('/profile', async (req, res) => {
-    if (req.session.user === undefined) {
+router.get('/profile', authToken, async (req, res) => {
+    console.log(req.headers)
+    if (req.user === undefined) {
         res.render('failedlogin')
     } else {
-        res.render('profile', { user: req.session.user })
+        res.render('profile', { user: req.user })
     }
 })
 

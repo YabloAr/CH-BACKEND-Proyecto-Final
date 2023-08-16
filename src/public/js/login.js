@@ -7,19 +7,18 @@ form.addEventListener('submit', e => {
         email: form.email.value,
         password: form.password.value
     }
+
     fetch('api/sessions/login', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-        .then(result => {
-            console.log('Login.js fetch result of api/sessions/login is:'); // Check the result from the server
-            console.log(result); // Check the result from the server
+    }).then(result => result.json())
+        .then(result => { //result es la token
             if (result.status === 200) {
-                console.log("Redirecting...");
-                window.location.replace('/products');
+                localStorage.setItem('token', result.accessToken)
+                window.location.replace('/');
             }
             if (result.status === 400) { alert('You are not registered.') }
         })
