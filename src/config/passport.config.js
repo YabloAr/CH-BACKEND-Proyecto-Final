@@ -68,23 +68,28 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (userE
 passport.use('github', new gitHubService({
     clientID: process.env.GIT_HUB_STRATEGY_CLIENT_ID,
     clientSecret: process.env.GIT_HUB_STRATEGY_CLIENT_SECRET,
-    callbackURL: process.env.GIT_HUB_STRATEGY_CALLBACK_URL
+    callbackURL: process.env.GIT_HUB_STRATEGY_CALLBACK_URL,
+    // proxy: true, //added to test
+    // scope: ['user:email'], //added to test
+    // userAgent: 'CHBackendApp' //added to test
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        console.log((profile))
-        let user = await userModel.findOne({ email: profile.json.email })
+        // console.log('Profile is:')
+        // console.log((profile)) //me trae todo menos email
+        let user = await userModel.findOne({ email: profile._json.email })
         if (!user) {
             let newUser = {
                 first_name: profile._json.name,
                 last_name: '',
                 age: '',
-                email: profile._json.email,
-                password: ''
+                email: profile._json.email
             }
+            console.log(newUser)
             let result = await userModel.create(newUser)
-            done(null, result)
+            return done(null, result)
         } else {
-            done(null, user)
+            return done(null, user) //cuando esto termina, se dispara la url de githubcallback en session.router
+            //Todo esta info termina guardada en req.user, y por sessions tambien en req.session.user
         }
     } catch (error) {
         return done(error)

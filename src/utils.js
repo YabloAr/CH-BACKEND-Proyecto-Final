@@ -2,10 +2,13 @@
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import "dotenv/config";
 
-const KEY = process.env.JASONWEBTOKEN_KEY
+//El navegador (front) almacenará dicho token y procederá a enviarlo en cada request por medio de los headers.
+//El servidor recibe las peticiones, busca el token de jwt en los headers. 
+//Si lo encuentra, podrá proceder, si no, entonces requerirá autenticación nuevamente.
+import jwt from 'jsonwebtoken'
+const KEY = process.env.JASONWEBTOKEN_KEY //inventada por mi mismisimo ego. (puede ser cualquier cosa)
 
 export const generateToken = (user) => {
     const token = jwt.sign({ user }, KEY, { expiresIn: '6h' })

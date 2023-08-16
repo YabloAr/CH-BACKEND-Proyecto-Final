@@ -38,11 +38,18 @@ router.get('/failedlogin', async (req, res) => {
 
 //GITHUB LOGIN
 //Updated clase 21 - github
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { })
+//
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => {
+    //Esta primer parte de la auth de github, pide los permisos al usuario para loguearse con su cuenta de github, y poder nosotros
+    //acceder a su email
+})
 
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/');
+    // This route handles the callback from GitHub after the user has successfully authenticated.
+    // If the authentication fails, the user will be redirected to /login as specified by the failureRedirect option.
+    req.session.user = req.user // Store the authenticated user's data in the session
+    // console.log(req.session.user)
+    res.redirect('/') // Redirect the user to the homepage after successful authentication
 });
 
 
