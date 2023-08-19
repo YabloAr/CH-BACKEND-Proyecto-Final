@@ -4,9 +4,7 @@ Tutora: Noelia Cossio.
 Nuevo repositorio para alojar el progreso del proyecto final del curso.
 Las entregas iran siendo alojadas en nuevas ramas.
 
-Desafio Clase 19 - Login por Formulario: Entrega Finalizada
+Desafio Clase 21 - Sesiones con express-session, y login by GithubService
+Notas: No pude implementar la funcionalidad con jsonwebtokens al 100 % por errores en headers. So...sessions.
 
-Consultas: None.
-
-Actualmente funciona con session en db.
-Actualizar al uso de tokens. In progress.
+Consultas:
