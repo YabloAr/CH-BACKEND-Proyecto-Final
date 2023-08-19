@@ -1,6 +1,6 @@
 //CODERHOUSE BACKEND 43360
 //Alumno: Mellyid Salomón
-
+//Test push.
 //dotenv -- CONSULTAR Y RESOLVER
 import "dotenv/config";
 
@@ -38,6 +38,7 @@ const httpserver = app.listen(PORT, () => console.log("Server up."))
 mongoose.set('strictQuery', false) //corrige error de deprecacion del sistema
 const connection = mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }) //añadi estos dos parametros por docs de mongoose, evita futura deprecacion.
+
 
 //deberia deprecarse por las tokens? O
 app.use(session({
