@@ -1,12 +1,10 @@
-<h2>User Info</h2>
 <div>
-  <h3>Public Data</h3>
-  <p>Name:</p>
-  <p>{{user.first_name}}</p>
-  <p>Email:</p>
-  <p>{{user.email}}</p>
-  <p>Role:</p>
-  <p>{{user.rol}}</p>
+  <h2>User Info</h2>
+  <p>Name: {{user.first_name}} {{user.last_name}}</p>
+  <p>Email: {{user.email}}</p>
+  <p>Age: {{user.age}}</p>
+  <p>Role: {{user.role}}</p>
 </div>
 <a href="http://localhost:8080/"> <button> Home </button></a>
-<script src="/js/profile.js"></script>
+<button style="width: 120px" id="logout">Logout </button>
+<script src="/js/logout.js"></script>

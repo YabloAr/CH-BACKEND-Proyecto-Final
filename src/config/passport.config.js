@@ -68,36 +68,28 @@ passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (userE
 passport.use('github', new gitHubService({
     clientID: process.env.GIT_HUB_STRATEGY_CLIENT_ID,
     clientSecret: process.env.GIT_HUB_STRATEGY_CLIENT_SECRET,
-    callbackURL: process.env.GIT_HUB_STRATEGY_CALLBACK_URL,
-    // proxy: true, //added to test
-    // scope: ['user:email'], //added to test
-    // userAgent: 'CHBackendApp' //added to test
+    callbackURL: process.env.GIT_HUB_STRATEGY_CALLBACK_URL
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        // console.log('Profile is:')
-        // console.log((profile)) //me trae todo menos email
-        let user = await userModel.findOne({ email: profile._json.email })
+        console.log('passport strat GitHubService profile is:')
+        console.log(profile)
+        let user = await userModel.findOne({ email: profile.emails[0].value })
         if (!user) {
             let newUser = {
-                first_name: profile._json.name,
+                first_name: profile._json.login,
                 last_name: '',
                 age: '',
-                email: profile._json.email
+                email: profile.emails[0].value,
+                password: ''
             }
-            console.log(newUser)
             let result = await userModel.create(newUser)
-            return done(null, result)
+            done(null, result)
         } else {
-            return done(null, user) //cuando esto termina, se dispara la url de githubcallback en session.router
-            //Todo esta info termina guardada en req.user, y por sessions tambien en req.session.user
+            done(null, user)
         }
     } catch (error) {
         return done(error)
     }
-}
-))
-
-
-
+}))
 
 export const initPassport = () => {/*Quedo vacio despues de la sacar la estrategia 'register' de adentro hecha en clase*/ }

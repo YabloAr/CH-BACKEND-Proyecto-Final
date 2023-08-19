@@ -39,6 +39,7 @@ mongoose.set('strictQuery', false) //corrige error de deprecacion del sistema
 const connection = mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }) //añadi estos dos parametros por docs de mongoose, evita futura deprecacion.
 
+//deberia deprecarse por las tokens? O
 app.use(session({
     store: MongoStore.create({
         mongoUrl: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.hiwmxr5.mongodb.net/ecommerce?retryWrites=true&w=majority`,
@@ -50,10 +51,10 @@ app.use(session({
     // saveUninitialized: al estar en falso, durante la vida de la session, si esta session file no cambia, no se guarda.
     //Para este proyecto, no nos interesa guardar sesiones sin registrar en la db.
     saveUninitialized: false
-
 }))
 
 //Express handlebars
+
 app.engine('handlebars', handlebars.engine()) //habilitamos el uso del motor de plantillas en el servidor.
 app.set('views', __dirname + '/views') //declaramos la carpeta con las vistas para las plantillas.
 app.set('view engine', 'handlebars') //le decimos a express que use el motor de vistas de handlebars.

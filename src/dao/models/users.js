@@ -10,10 +10,11 @@ const userSchema = new mongoose.Schema({
     },
     age: Number,
     password: {
-        type: String,
-        required: true,
+        type: String
+        // required: true //desactivado para que auth de github funcione, actualizar mas adelante.
+
     },
-    rol: {
+    role: {
         type: String,
         default: 'user'
     }

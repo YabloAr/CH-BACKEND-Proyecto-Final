@@ -18,8 +18,11 @@ router.get('/', (req, res) => {
 })
 
 //GET PRODUCTS  con PAGINATE
-router.get('/products', authToken, async (req, res) => {
+router.get('/products', async (req, res) => {
     try {
+        console.log('entra products')
+        if (!req.session.user) res.status(400).send({ status: 'error', message: 'You are not logged in.' })
+        const user = req.session.user
         //Optimizado, validamos la query, si no existe, le otorgamos el valor por defecto.
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 5
@@ -57,7 +60,7 @@ router.get('/products', authToken, async (req, res) => {
         //finalmente le enviamos mediante el render, los datos necesarios para los handlebars.
         res.render('products', { products, hasPrevPage, hasNextPage, prevPage, nextPage, limit, sort, category, user })
 
-    } catch (error) { return { status: 'error', error: error.message } }
+    } catch (error) { res.status(500).send({ status: 'error', error: error.message }); }
 })
 
 //GET CARTS Router de carts
@@ -99,16 +102,22 @@ router.get('/register', (req, res) => {
 
 //GET login (agrega datos de usuario a req.session si el login es correcto)
 router.get('/login', (req, res) => {
-    res.render('login')
+    const session = { current: false }
+    if (req.session.user) {
+        console.log('logged in')
+        session.current = true
+        session.name = req.session.user.first_name
+    }
+    res.render('login', { session })
 })
 
 //GET profile, seria el finally this del tema sessions
-router.get('/profile', authToken, async (req, res) => {
-    console.log(req.headers)
-    if (req.user === undefined) {
+router.get('/profile', async (req, res) => {
+    if (req.session.user === undefined) {
         res.render('failedlogin')
     } else {
-        res.render('profile', { user: req.user })
+        console.log(req.session.user)
+        res.render('profile', { user: req.session.user })
     }
 })
 
