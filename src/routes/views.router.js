@@ -7,7 +7,7 @@ const cartManager = new CartManager()
 
 const router = Router()
 
-//landing page
+//-------------------------------LANDING PAGE
 router.get('/', (req, res) => {
     const toProducts = 'http://localhost:8080/products'
     const toCarts = 'http://localhost:8080/carts'
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
     res.render('landing', { toProducts, toCarts, toLogin, toRegister, toProfile })
 })
 
-//GET PRODUCTS  con PAGINATE
+//-------------------------------PRODUCTS VIEW
 router.get('/products', async (req, res) => {
     try {
         console.log('entra products')
@@ -63,14 +63,14 @@ router.get('/products', async (req, res) => {
     } catch (error) { res.status(500).send({ status: 'error', error: error.message }); }
 })
 
-//GET CARTS Router de carts
+//-------------------------------CARTS VIEW
 router.get('/carts', async (req, res) => {
     if (!req.session?.user) res.redirect('/login');
     let carts = await cartManager.getAll()
     res.render('carts', { carts }) //le enviamos mediante el render, los datos necesarios para los handlebars.
 })
 
-//GET CART BY ID Router de carts
+//-------------------------------CART DETAILS VIEW
 router.get('/carts/:cid', async (req, res) => {
     if (!req.session?.user) res.redirect('/login');
     const cid = req.params.cid
@@ -85,7 +85,7 @@ router.get('/carts/:cid', async (req, res) => {
     res.render('cart', { cid, products })
 })
 
-//GET CHAT Router de aplicacion chat
+//-------------------------------CHAT APP
 router.get('/chat', (req, res) => {
     res.render('chat', {
         style: 'index.css'
@@ -93,14 +93,14 @@ router.get('/chat', (req, res) => {
 })
 
 
-//GET USERS AND SESSIONS
+//-------------------------------USER UTILITIES VIEWS
 
-//GET register
+//REGISTER
 router.get('/register', (req, res) => {
     res.render('register')
 })
 
-//GET login (agrega datos de usuario a req.session si el login es correcto)
+//LOGIN
 router.get('/login', (req, res) => {
     const session = { current: false }
     if (req.session.user) {
@@ -111,7 +111,7 @@ router.get('/login', (req, res) => {
     res.render('login', { session })
 })
 
-//GET profile, seria el finally this del tema sessions
+//PROFILE VIEW
 router.get('/profile', async (req, res) => {
     if (req.session.user === undefined) {
         res.render('failedlogin')
