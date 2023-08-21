@@ -55,15 +55,11 @@ app.use(session({
 }))
 
 //Express handlebars
-
 app.engine('handlebars', handlebars.engine()) //habilitamos el uso del motor de plantillas en el servidor.
 app.set('views', __dirname + '/views') //declaramos la carpeta con las vistas para las plantillas.
 app.set('view engine', 'handlebars') //le decimos a express que use el motor de vistas de handlebars.
 
-//Passport, update clase 20
-//npm i bcrypt --> hasheador: almacenamos las funciones de hasheo en utils.js
-//npm i passport --> modulo core && passport-local --> modulo de estrategias
-//almacenamos la configuracion de passport en una carpeta dedicada config/passport.config
+//Passport
 initPassport()
 app.use(passport.initialize())
 app.use(passport.session())
