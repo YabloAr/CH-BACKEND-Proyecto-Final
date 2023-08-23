@@ -2,16 +2,8 @@ CODERHOUSE - BACKEND #43360
 Tutora: Noelia Cossio.
 
 Nuevo repositorio para alojar el progreso del proyecto final del curso.
-Las entregas iran siendo alojadas en nuevas ramas.
+Las entregas futuras seran alojadas en nuevos repositorios.
 
-Desafio Clase 21 - Sesiones con express-session, y login by GithubService
-Notas: No pude implementar la funcionalidad con jsonwebtokens al 100 % por errores en headers. So...sessions.
+Entrega 24 - Segunda Integradora finalizada.
 
-Consultas:
-Test push.
-
-Manny is helpkling
-Main tag..
-
-Nuevo.
-Nyuevo 2
+Este repositorio ya no tendra modificaciones.
