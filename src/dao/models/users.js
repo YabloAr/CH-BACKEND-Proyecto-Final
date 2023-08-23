@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
         // required: true //desactivado para que auth de github funcione, actualizar mas adelante.
 
     },
+    cartId: {
+        type: String,
+        default: ''
+    },
     role: {
         type: String,
         default: 'user'
